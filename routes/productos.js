@@ -2,12 +2,14 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 
 const {
-  crearCategoria,
-  obtenerCategorias,
-  obtenerCategoria,
-  actualizarCategoria,
-  borrarCategoria
-} = require("../controllers/categorias");
+    crearProducto,
+    obtenerProducto,
+    obtenerProductos,
+    actualizarProducto,
+    borrarProducto
+
+
+} = require("../controllers/productos");
 
 const {
   validarCampos,
@@ -18,60 +20,63 @@ const {
 
 const {
   esRoleValido,
-  correoExiste,
-  usuarioPorIdExiste,
-  existeCategoria,
+  existeProducto,
+  existeCategoria
 } = require("../helpers/db-validators");
 
 const router = Router();
-//Obtener todas las categorias - publico
-router.get("/", obtenerCategorias);
+//Obtener todos los productos - publico
+router.get("/", obtenerProductos);
 
-// Obtener una categoria por id - Publico
+// Obtener un producto por id - Publico
 router.get(
   "/:id",
   [
     check("id", "No es un id de Mongo válido").isMongoId(),
-    check("id").custom(existeCategoria),
+    check("id").custom(existeProducto),
     validarCampos,
   ],
-  obtenerCategoria
+  obtenerProducto
 );
 
-//Crear categoría - privado
+//Crear producto - privado
 router.post(
   "/",
   [
     validateJWT,
     check("nombre", "El nombre es requerido").not().isEmpty(),
+    check("categoria", "La categoria es requerida").not().isEmpty(),
+    check("categoria", "No es un mongo id").isMongoId(),
+    check("categoria").custom(existeCategoria),
     //check('usuario','El usuario es obligatorio').not().isEmpty(),
     validarCampos,
   ],
-  crearCategoria
+  crearProducto
 );
 
-//Actualizar una categoria - privado
+//Actualizar un producto - privado
 router.put(
   "/:id",
   [
     validateJWT,
     tieneRole("ADMIN", "EMPLOYEE"),
     check("id", "No es un id valido").isMongoId(),
-    check("id").custom(existeCategoria),
-    check('nombre', 'El nombre es un campo obligatorio'),
+    check("id").custom(existeProducto),
+    check('categoria','No es un id de mongo valido').isMongoId(),
     check("rol").custom(esRoleValido),
   ],
-  actualizarCategoria
+  actualizarProducto
 );
+
 //Delete lógico - privado - Admin
 router.delete("/:id", [
   validateJWT,
   esADminRole,
   check("id", "No es un id valido").isMongoId(),
-  check("id").custom(existeCategoria),
+  check("id").custom(existeProducto),
   validarCampos,
 ], 
-borrarCategoria
+borrarProducto
 );
 
 module.exports = router;

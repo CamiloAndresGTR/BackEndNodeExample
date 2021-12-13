@@ -59,7 +59,7 @@ const usuariosPut = async (req, res = response) => {
     const salt = bcryptjs.genSaltSync();
     rest.password = bcryptjs.hashSync(password, salt);
   }
-  const usuarioPut = await Usuario.findByIdAndUpdate(id, rest);
+  const usuarioPut = await Usuario.findByIdAndUpdate(id, rest, {new:true});
   res.json(usuarioPut);
 };
 

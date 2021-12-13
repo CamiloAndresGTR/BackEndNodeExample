@@ -16,8 +16,7 @@ const esADminRole = (req, res = response, next) => {
 };
 const tieneRole = (...roles) => {
   return (req, res = response, next) => {
-      console.log(roles);
-      console.log(req.usuario.rol);
+ 
     if (!req.usuario) {
         return res.status(500).json({
           msg: "Algo salió mal -admin -token -rol",
